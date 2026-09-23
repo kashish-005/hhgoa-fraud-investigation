@@ -1,0 +1,11 @@
+USE GRAPH HHGoaFraudGraph
+
+CREATE QUERY get_region_cluster(STRING rid) FOR GRAPH HHGoaFraudGraph {
+  region = SELECT r FROM BillingRegion:r WHERE r.region_id == rid;
+  txns = SELECT t FROM region:r <-(BILLED_IN)- Transaction:t
+         ORDER BY t.ts DESC LIMIT 200;
+  cards = SELECT c FROM txns:t -(MADE>)- Card:c;
+  PRINT region;
+  PRINT txns;
+  PRINT cards;
+}

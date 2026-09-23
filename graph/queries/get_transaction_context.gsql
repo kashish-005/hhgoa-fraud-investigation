@@ -1,0 +1,16 @@
+USE GRAPH HHGoaFraudGraph
+
+CREATE QUERY get_transaction_context(STRING tid) FOR GRAPH HHGoaFraudGraph {
+  txns = SELECT t FROM Transaction:t WHERE t.transaction_id == tid;
+  cards = SELECT c FROM txns:t <- (MADE) - Card:c;
+  customers = SELECT cu FROM cards:c <- (OWNS) - Customer:cu;
+  devices = SELECT d FROM txns:t -(FROM_DEVICE>)- DeviceProfile:d;
+  regions = SELECT r FROM txns:t -(BILLED_IN>)- BillingRegion:r;
+  emails = SELECT e FROM txns:t -(PURCHASER_EMAIL>)- EmailDomain:e;
+  PRINT txns;
+  PRINT cards;
+  PRINT customers;
+  PRINT devices;
+  PRINT regions;
+  PRINT emails;
+}

@@ -1,0 +1,9 @@
+USE GRAPH HHGoaFraudGraph
+
+CREATE QUERY get_card_transactions(STRING cid) FOR GRAPH HHGoaFraudGraph {
+  cards = SELECT c FROM Card:c WHERE c.card_id == cid;
+  txns = SELECT t FROM cards:c -(MADE>)- Transaction:t
+         ORDER BY t.ts DESC LIMIT 200;
+  PRINT cards;
+  PRINT txns;
+}

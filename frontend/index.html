@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HHGoa Fraud Investigation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#080B10; --bg-1:#0E141D; --bg-2:#121A26; --bg-3:#161F2C;
+    --line:rgba(255,255,255,.09); --line-soft:rgba(255,255,255,.055);
+    --ink:#EAEEF5; --ink-soft:#8B93A6; --ink-faint:#5B6577;
+    --accent:#2DD4BF; --accent-ink:#0A1613; --accent-glow:rgba(45,212,191,.38);
+    --violet:#8B7CF6;
+    --red:#F2545B; --red-bg:rgba(242,84,91,.13); --red-line:rgba(242,84,91,.32);
+    --amber:#F5B544; --amber-bg:rgba(245,181,68,.13); --amber-line:rgba(245,181,68,.32);
+    --green:#34D399; --green-bg:rgba(52,211,153,.13); --green-line:rgba(52,211,153,.32);
+    --gray-bg:rgba(255,255,255,.055); --gray-line:rgba(255,255,255,.1);
+    --radius:14px; --radius-sm:9px;
+  }
+  html,body{height:100%;margin:0;}
+  *{box-sizing:border-box;}
+  ::selection{background:var(--accent-glow); color:#fff;}
+  body{
+    background:
+      radial-gradient(900px 500px at 8% -8%, rgba(45,212,191,.10), transparent 60%),
+      radial-gradient(700px 460px at 96% 0%, rgba(139,124,246,.09), transparent 55%),
+      var(--bg-0);
+    color:var(--ink); font-family:'IBM Plex Sans',system-ui,sans-serif;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a,button{font-family:inherit;}
+  ::-webkit-scrollbar{width:9px; height:9px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:20px;}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2);}
+
+  .app{display:grid; grid-template-columns:76px 320px 1fr; min-height:100vh;}
+
+  /* ---------- icon rail ---------- */
+  .rail{background:linear-gradient(180deg, var(--bg-2), var(--bg-1)); border-right:1px solid var(--line-soft);
+        display:flex; flex-direction:column; align-items:center; padding:20px 0; gap:8px;}
+  .rail-mark{width:38px;height:38px;border-radius:11px;
+    background:linear-gradient(135deg, var(--accent), var(--violet));
+    display:flex;align-items:center;justify-content:center; margin-bottom:26px;
+    box-shadow:0 6px 18px -6px var(--accent-glow);}
+  .rail-mark svg{width:19px;height:19px;stroke:#08110F;}
+  .rail-item{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    color:var(--ink-faint); cursor:default; position:relative; transition:background .18s ease, color .18s ease;}
+  .rail-item svg{width:19px;height:19px;}
+  .rail-item.active{background:rgba(45,212,191,.12); color:var(--accent);}
+  .rail-item.active::before{content:"";position:absolute; left:-20px; width:3px; height:22px; border-radius:3px; background:var(--accent);}
+  .rail-item.ghost{opacity:.42; cursor:not-allowed;}
+  .rail-item.ghost:hover{opacity:.7; background:rgba(255,255,255,.05);}
+  .rail-spacer{flex:1;}
+  .rail-avatar{width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(135deg,#3B4457,#20283A); border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center; font-size:11px; font-weight:600; color:var(--ink-soft);}
+
+  /* ---------- sidebar ---------- */
+  .sidebar{background:linear-gradient(180deg, var(--bg-1), var(--bg-0)); border-right:1px solid var(--line-soft);
+    display:flex; flex-direction:column; min-width:0;}
+  .sidebar-head{padding:24px 20px 18px; border-bottom:1px solid var(--line-soft);}
+  .brand-title{font-size:17px; margin:0 0 3px; font-weight:700; letter-spacing:-.01em;
+    background:linear-gradient(90deg, #fff, #B9C2D4); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .brand-sub{margin:0; font-size:11.5px; color:var(--ink-faint); letter-spacing:.03em;}
+
+  .stat-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:16px 20px 4px;}
+  .stat-box{background:var(--bg-2); border:1px solid var(--line-soft); border-radius:var(--radius-sm); padding:9px 10px;}
+  .stat-box .n{font-size:16px; font-weight:700; font-family:'IBM Plex Mono',monospace; line-height:1.1;}
+  .stat-box .l{font-size:9.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; margin-top:3px;}
+
+  .queue-meta{display:flex; justify-content:space-between; align-items:center; padding:18px 20px 9px;
+    font-size:10.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.08em;}
+  .case-list{overflow-y:auto; flex:1; padding:0 10px 16px;}
+
+  .case-row{width:100%; text-align:left; background:none; border:1px solid transparent; border-radius:var(--radius-sm);
+    padding:12px 12px; cursor:pointer; display:flex; flex-direction:column; gap:8px; margin-bottom:4px;
+    transition:background .16s ease, border-color .16s ease, transform .12s ease;}
+  .case-row:hover{background:rgba(255,255,255,.035); transform:translateX(2px);}
+  .case-row.selected{background:linear-gradient(90deg, rgba(45,212,191,.14), rgba(45,212,191,.045));
+    border-color:rgba(45,212,191,.3);}
+  .case-row-top{display:flex; justify-content:space-between; align-items:center;}
+  .case-id{font-size:13px; font-weight:600; color:var(--ink); letter-spacing:.01em;}
+  .case-row.selected .case-id{color:var(--accent);}
+  .case-amt{font-size:12px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;}
+  .case-row-bottom{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+
+  .tag{display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:500; padding:3px 8px 3px 6px;
+    border-radius:20px; background:var(--gray-bg); color:var(--ink-soft); border:1px solid var(--line-soft); white-space:nowrap;}
+  .tag svg{width:10px;height:10px;}
+
+  .risk-pill{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; padding:3px 9px;
+    border-radius:20px; font-family:'IBM Plex Mono',monospace; border:1px solid transparent;}
+  .risk-pill::before{content:""; width:6px; height:6px; border-radius:50%;}
+  .risk-high{background:var(--red-bg); color:var(--red); border-color:var(--red-line);}
+  .risk-high::before{background:var(--red); box-shadow:0 0 8px var(--red);}
+  .risk-mid{background:var(--amber-bg); color:var(--amber); border-color:var(--amber-line);}
+  .risk-mid::before{background:var(--amber); box-shadow:0 0 8px var(--amber);}
+  .risk-low{background:var(--green-bg); color:var(--green); border-color:var(--green-line);}
+  .risk-low::before{background:var(--green); box-shadow:0 0 8px var(--green);}
+  .risk-none{background:var(--gray-bg); color:var(--ink-faint); border-color:var(--line-soft);}
+  .risk-none::before{background:var(--ink-faint);}
+
+  /* ---------- main ---------- */
+  .main{padding:28px 40px 48px; overflow-y:auto; min-width:0;}
+  .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:26px;}
+  .crumbs{font-size:12px; color:var(--ink-faint); display:flex; align-items:center; gap:6px;}
+  .crumbs b{color:var(--ink-soft); font-weight:500;}
+  .search-box{display:flex; align-items:center; gap:8px; background:var(--bg-2); border:1px solid var(--line);
+    border-radius:20px; padding:7px 14px; color:var(--ink-faint); font-size:12.5px; min-width:220px;}
+  .search-box svg{width:14px;height:14px; flex-shrink:0;}
+
+  .main-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; gap:20px;
+    animation:fadeUp .35s ease both;}
+  .main-head h2{font-size:26px; margin:0 0 7px; letter-spacing:-.015em; font-weight:700;
+    display:flex; align-items:center; gap:12px;}
+  .main-head .sub{font-size:13px; color:var(--ink-soft); display:flex; align-items:center; gap:6px;}
+  .main-head .sub svg{width:13px;height:13px; opacity:.7;}
+
+  .status-chip{display:inline-flex; align-items:center; gap:7px; font-size:12px; padding:7px 14px; border-radius:20px;
+    background:var(--bg-2); border:1px solid var(--line); color:var(--ink-soft); white-space:nowrap; font-weight:500;}
+  .status-dot{width:6px;height:6px;border-radius:50%; background:var(--amber); box-shadow:0 0 0 0 rgba(245,181,68,.5); animation:pulse 2s infinite;}
+
+  .trigger-quote{font-size:13.5px; color:var(--ink-soft); background:linear-gradient(90deg, rgba(45,212,191,.07), transparent);
+    border-left:3px solid var(--accent); padding:12px 16px; border-radius:0 10px 10px 0; margin:0 0 24px; line-height:1.6;
+    animation:fadeUp .4s ease both; animation-delay:.03s;}
+  .trigger-quote svg{width:13px; height:13px; margin-right:6px; opacity:.8; vertical-align:-2px;}
+
+  .grid2{display:grid; grid-template-columns:1.2fr .8fr; gap:20px; align-items:start;}
+  @media (max-width: 1040px){ .grid2{grid-template-columns:1fr;} .app{grid-template-columns:64px 1fr;} .sidebar{display:none;} .search-box{display:none;} }
+
+  .card{background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.012)), var(--bg-1);
+    border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin-bottom:20px;
+    backdrop-filter:blur(10px); position:relative; overflow:hidden;
+    box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -28px rgba(0,0,0,.7);
+    animation:fadeUp .4s ease both; transition:border-color .2s ease, transform .2s ease;}
+  .card:hover{border-color:rgba(255,255,255,.16); transform:translateY(-1px);}
+  .card:nth-of-type(2){animation-delay:.05s;} .card:nth-of-type(3){animation-delay:.1s;}
+
+  .card h3{font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint); margin:0 0 16px;
+    font-weight:600; display:flex; align-items:center; gap:8px;}
+  .card h3 svg{width:14px;height:14px; color:var(--accent); opacity:.9;}
+
+  .field-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 20px;}
+  .field label{display:block; font-size:10.5px; color:var(--ink-faint); margin-bottom:4px; text-transform:uppercase; letter-spacing:.05em;}
+  .field .val{font-size:14.5px; font-weight:500; color:var(--ink);}
+  .field .val.mono{font-size:13.5px; font-family:'IBM Plex Mono',monospace;}
+
+  /* risk ring */
+  .risk-wrap{display:flex; align-items:center; gap:22px; margin-top:2px;}
+  .risk-ring-box{position:relative; width:96px; height:96px; flex-shrink:0;}
+  .risk-ring-box svg{transform:rotate(-90deg);}
+  .risk-ring-num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:19px; font-weight:700;}
+  .risk-desc{flex:1;}
+  .risk-band-label{font-size:14px; font-weight:600; margin-bottom:4px; display:flex; align-items:center; gap:7px;}
+  .risk-band-label svg{width:15px;height:15px;}
+  .risk-desc p{margin:0; font-size:12.5px; color:var(--ink-soft); line-height:1.55;}
+
+  .evidence-item{display:flex; gap:13px; padding:13px 2px; border-bottom:1px solid var(--line-soft);
+    transition:background .15s ease; border-radius:8px;}
+  .evidence-item:hover{background:rgba(255,255,255,.025);}
+  .evidence-item:last-child{border-bottom:none;}
+  .evidence-icon{width:32px;height:32px;border-radius:9px; background:var(--bg-2); border:1px solid var(--line-soft);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .evidence-icon svg{width:15px;height:15px; color:var(--accent);}
+  .evidence-body .t{font-size:13.5px; font-weight:600; color:var(--ink);}
+  .evidence-body .d{font-size:12px; color:var(--ink-soft); margin-top:3px; line-height:1.45;}
+
+  .txn-list{display:flex; flex-direction:column;}
+  .txn-row{display:flex; justify-content:space-between; align-items:center; padding:10px 2px;
+    border-bottom:1px solid var(--line-soft); font-size:13px; transition:background .15s ease; border-radius:6px;}
+  .txn-row:hover{background:rgba(255,255,255,.025);}
+  .txn-row:last-child{border-bottom:none;}
+  .txn-row .left{display:flex; align-items:center; gap:10px;}
+  .txn-row .amt{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+  .flag-badge{font-size:9.5px; font-weight:700; color:#fff; background:linear-gradient(135deg, var(--red), #C63741);
+    padding:2px 7px; border-radius:5px; letter-spacing:.03em; box-shadow:0 3px 10px -3px rgba(242,84,91,.6);}
+  .dot-small{width:6px;height:6px; border-radius:50%; background:var(--ink-faint); flex-shrink:0;}
+  .txn-row.is-flagged .dot-small{background:var(--red); box-shadow:0 0 6px var(--red);}
+
+  .dummy-note{display:flex; align-items:center; gap:6px; font-size:10.5px; color:var(--ink-faint);
+    margin-top:12px; padding-top:12px; border-top:1px dashed var(--line-soft);}
+  .dummy-note svg{width:11px;height:11px; opacity:.8;}
+  .empty-state{display:flex; align-items:center; justify-content:center; height:70vh; color:var(--ink-faint); font-size:14px;}
+
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(245,181,68,.55);} 70%{box-shadow:0 0 0 6px rgba(245,181,68,0);} 100%{box-shadow:0 0 0 0 rgba(245,181,68,0);} }
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="rail">
+    <div class="rail-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v6c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5v-6L12 2z"/></svg>
+    </div>
+    <div class="rail-item active" title="Case Queue">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+    </div>
+    <div class="rail-item ghost" title="Closed Cases (not wired up)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+    </div>
+    <div class="rail-item ghost" title="Graph Explorer (not wired up)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.8 7.3 10.5 16 M16.2 7.3 13.5 16 M8.4 6h7.2"/></svg>
+    </div>
+    <div class="rail-item ghost" title="Analytics (not wired up)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M12 19V5M20 19v-7"/></svg>
+    </div>
+    <div class="rail-spacer"></div>
+    <div class="rail-item ghost" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>
+    </div>
+    <div class="rail-avatar">AN</div>
+  </nav>
+
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <h1 class="brand-title">HHGoa Fraud Investigation</h1>
+      <p class="brand-sub">Analyst case queue &middot; TigerGraph HHGOA_IEEE</p>
+    </div>
+    <div class="stat-strip" id="statStrip"></div>
+    <div class="queue-meta">
+      <span>Case pack</span>
+      <span id="queueCount">20 cases</span>
+    </div>
+    <div class="case-list" id="caseList"></div>
+  </aside>
+
+  <main class="main" id="main"></main>
+
+</div>
+
+<script>
+// ---------------------------------------------------------------------
+// STATIC / DUMMY DATA ONLY. No backend, no graph, no agent logic.
+// Case fields (id, trigger, txn, card, customer, score) come from the
+// real case_pack.csv. Customer/card/evidence detail fields are
+// placeholder content for layout purposes and are marked as such.
+// ---------------------------------------------------------------------
+const CASES = [
+  {id:"HHG-001", opened:"2016-12-05 01:55:28", trigger:"risk_score", txn:"3514030", card:"C12382-K1", cust:"C12382", score:0.61, amt:77.07, channel:"in_person", region:"444"},
+  {id:"HHG-002", opened:"2016-11-22 23:27:07", trigger:"risk_score", txn:"3478782", card:"C11891-K1", cust:"C11891", score:0.79, amt:292.36, channel:"online"},
+  {id:"HHG-003", opened:"2016-12-10 15:01:21", trigger:"customer_report", txn:"3530164", card:"C08623-K2", cust:"C08623", score:null, amt:49.00, channel:"online"},
+  {id:"HHG-004", opened:"2016-12-29 07:53:54", trigger:"customer_report", txn:"3583227", card:"C08106-K1", cust:"C08106", score:null, amt:128.33, channel:"online"},
+  {id:"HHG-005", opened:"2016-12-08 03:38:37", trigger:"risk_score", txn:"3523199", card:"C02923-K1", cust:"C02923", score:0.54, amt:100.07, channel:"online"},
+  {id:"HHG-006", opened:"2016-11-22 02:30:00", trigger:"customer_report", txn:"3476682", card:"C07297-K1", cust:"C07297", score:null, amt:482.12, channel:"online"},
+  {id:"HHG-007", opened:"2016-12-05 03:46:14", trigger:"risk_score", txn:"3514948", card:"C09933-K2", cust:"C09933", score:0.87, amt:111.92, channel:"in_person", region:"264"},
+  {id:"HHG-008", opened:"2016-12-20 03:08:56", trigger:"customer_report", txn:"3558054", card:"C13171-K2", cust:"C13171", score:null, amt:55.68, channel:"online"},
+  {id:"HHG-009", opened:"2016-12-28 17:10:53", trigger:"customer_report", txn:"3581141", card:"C08299-K1", cust:"C08299", score:null, amt:30.02, channel:"online"},
+  {id:"HHG-010", opened:"2016-12-02 18:18:27", trigger:"risk_score", txn:"3506725", card:"C10434-K1", cust:"C10434", score:0.90, amt:1000.03, channel:"online"},
+  {id:"HHG-011", opened:"2016-12-29 06:27:44", trigger:"customer_report", txn:"3583368", card:"C11923-K2", cust:"C11923", score:null, amt:131.30, channel:"online"},
+  {id:"HHG-012", opened:"2016-12-18 05:00:31", trigger:"risk_score", txn:"3553342", card:"C05876-K2", cust:"C05876", score:0.55, amt:30.91, channel:"in_person", region:"494"},
+  {id:"HHG-013", opened:"2016-12-09 05:39:29", trigger:"risk_score", txn:"3526826", card:"C07671-K2", cust:"C07671", score:0.76, amt:35.66, channel:"online"},
+  {id:"HHG-014", opened:"2016-11-22 20:11:00", trigger:"analyst_request", txn:"3478561", card:"C13487-K1", cust:"C13487", score:null, amt:64.40, channel:"online"},
+  {id:"HHG-015", opened:"2016-11-17 19:03:36", trigger:"risk_score", txn:"3464869", card:"C03042-K1", cust:"C03042", score:0.77, amt:599.94, channel:"online"},
+  {id:"HHG-016", opened:"2016-12-12 01:39:08", trigger:"customer_report", txn:"3534820", card:"C09988-K1", cust:"C09988", score:null, amt:59.67, channel:"online"},
+  {id:"HHG-017", opened:"2016-11-12 00:46:24", trigger:"risk_score", txn:"3450629", card:"C04570-K1", cust:"C04570", score:0.57, amt:100.09, channel:"online"},
+  {id:"HHG-018", opened:"2016-11-27 14:41:26", trigger:"customer_report", txn:"3491361", card:"C02354-K2", cust:"C02354", score:null, amt:39.08, channel:"online"},
+  {id:"HHG-019", opened:"2016-12-01 22:28:53", trigger:"risk_score", txn:"3503878", card:"C07987-K2", cust:"C07987", score:0.90, amt:99.92, channel:"online"},
+  {id:"HHG-020", opened:"2016-12-03 12:04:26", trigger:"risk_score", txn:"3509359", card:"C12265-K2", cust:"C12265", score:0.52, amt:125.08, channel:"online"},
+];
+
+const TRIGGER_TEXT = {
+  risk_score: c => `Real-time model scored transaction ${c.txn} ($${c.amt.toFixed(2)}, ${c.channel === "in_person" ? "billing region " + c.region : "online"}) at ${c.score.toFixed(2)}. Review and decide.`,
+  customer_report: c => `Customer ${c.cust} message: "I never made this $${c.amt.toFixed(2)} purchase. Please check my card." Refers to ${c.txn}.`,
+  analyst_request: c => `Analyst request: several cards this month show purchases from the same unusual device profile. Review transaction ${c.txn} on card ${c.card} and look for related activity.`,
+};
+
+const TRIGGER_ICON = {
+  risk_score: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>`,
+  customer_report: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.3 0-2.5-.28-3.6-.78L3 20l1.3-4.2A8.5 8.5 0 1 1 21 11.5z"/></svg>`,
+  analyst_request: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.2"/><path d="M4.5 19c.7-3 3-4.6 5.5-4.6s4.8 1.6 5.5 4.6M17 8.5l2 2 3.5-3.5"/></svg>`,
+};
+
+const ICONS = {
+  txn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></svg>`,
+  shield: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v6c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5v-6L12 2z"/><path d="M12 8v5"/><circle cx="12" cy="16" r=".6" fill="currentColor" stroke="none"/></svg>`,
+  clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>`,
+  user: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.1-4 4.2-6 7.5-6s6.4 2 7.5 6"/></svg>`,
+  network: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.8 7.3 10.5 16M16.2 7.3 13.5 16M8.4 6h7.2"/></svg>`,
+  folder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>`,
+  monitor: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>`,
+  pin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.8-6.5-10.8a6.5 6.5 0 1 1 13 0C18.5 15.2 12 21 12 21z"/><circle cx="12" cy="10" r="2.2"/></svg>`,
+  info: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 11.5h1.4v5"/></svg>`,
+  search: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>`,
+  chev: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>`,
+};
+
+// Deterministic placeholder generator so a given case always renders the
+// same dummy detail (nothing reshuffles on re-selection).
+function seeded(c, n){ let h=0; for(const ch of c.id) h = (h*31 + ch.charCodeAt(0)) >>> 0; return (h + n) % 97; }
+
+function riskBand(score){
+  if (score === null) return {cls:"risk-none", key:"none", label:"n/a", color:"var(--ink-faint)"};
+  if (score >= 0.70) return {cls:"risk-high", key:"high", label:score.toFixed(2), color:"var(--red)"};
+  if (score >= 0.40) return {cls:"risk-mid", key:"mid", label:score.toFixed(2), color:"var(--amber)"};
+  return {cls:"risk-low", key:"low", label:score.toFixed(2), color:"var(--green)"};
+}
+
+function renderStats(){
+  const byTrigger = {risk_score:0, customer_report:0, analyst_request:0};
+  CASES.forEach(c => byTrigger[c.trigger]++);
+  document.getElementById("statStrip").innerHTML = `
+    <div class="stat-box"><div class="n">${byTrigger.risk_score}</div><div class="l">Risk score</div></div>
+    <div class="stat-box"><div class="n">${byTrigger.customer_report}</div><div class="l">Reported</div></div>
+    <div class="stat-box"><div class="n">${byTrigger.analyst_request}</div><div class="l">Analyst</div></div>
+  `;
+}
+
+function renderList(selectedId){
+  const list = document.getElementById("caseList");
+  list.innerHTML = CASES.map(c => {
+    const band = riskBand(c.score);
+    return `
+      <button class="case-row ${c.id===selectedId ? 'selected':''}" onclick="selectCase('${c.id}')">
+        <div class="case-row-top">
+          <span class="case-id mono">${c.id}</span>
+          <span class="case-amt">$${c.amt.toFixed(2)}</span>
+        </div>
+        <div class="case-row-bottom">
+          <span class="tag">${TRIGGER_ICON[c.trigger]}${c.trigger.replace("_"," ")}</span>
+          <span class="risk-pill ${band.cls}">${c.score===null ? "—" : band.label}</span>
+        </div>
+      </button>`;
+  }).join("");
+}
+
+function riskRingSVG(score){
+  const r = 40, c2 = 2*Math.PI*r;
+  const pct = score===null ? 0 : score;
+  const band = riskBand(score);
+  const offset = c2 * (1-pct);
+  return `
+    <div class="risk-ring-box">
+      <svg width="96" height="96" viewBox="0 0 96 96">
+        <circle cx="48" cy="48" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/>
+        <circle cx="48" cy="48" r="${r}" fill="none" stroke="${band.color}" stroke-width="8"
+          stroke-linecap="round" stroke-dasharray="${c2}" stroke-dashoffset="${offset}"
+          style="filter:drop-shadow(0 0 6px ${score===null?'transparent':band.color}); transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1);"/>
+      </svg>
+      <div class="risk-ring-num" style="color:${band.color}">${score===null?"—":score.toFixed(2)}</div>
+    </div>`;
+}
+
+function renderMain(c){
+  const main = document.getElementById("main");
+  if (!c){ main.innerHTML = `<div class="empty-state">Select a case from the queue to view details</div>`; return; }
+
+  const band = riskBand(c.score);
+  const cardsOnFile = 1 + (seeded(c,1) % 3);
+  const memberSince = 2016 + "-0" + (1 + (seeded(c,2) % 6));
+  const network = ["Visa","Mastercard","American Express","Discover"][seeded(c,3) % 4];
+  const cardType = seeded(c,4) % 2 === 0 ? "Debit" : "Credit";
+
+  const evidence = [
+    { icon: ICONS.folder, t: "Prior closed case on file", d: `CC-${(1000+seeded(c,5)*7).toString().padStart(4,"0")} · ${seeded(c,6) % 3 === 0 ? "confirmed fraud" : "cleared"} · same customer, different window` },
+    { icon: ICONS.monitor, t: "Device profile overlap", d: c.channel === "online" ? `Seen on ${1 + seeded(c,7)%2} other card(s) in the past 30 days` : "No device record — in-person transaction" },
+    { icon: ICONS.pin, t: "Billing region history", d: c.channel === "in_person" ? `Region ${c.region} — ${seeded(c,8)%2===0 ? "first use for this customer" : "matches prior purchases"}` : "Not applicable — online transaction" },
+  ];
+
+  const recentTxns = [0,1,2].map(i => {
+    const amt = (5 + seeded(c, 10+i) * 3.1) % 300;
+    return { id: (parseInt(c.txn) - (i+1)*137).toString(), amt: amt.toFixed(2), flagged: false };
+  });
+  recentTxns.unshift({ id: c.txn, amt: c.amt.toFixed(2), flagged: true });
+
+  const riskNote = c.score===null
+    ? "No model score — this case was opened from a customer report or analyst request, not the detection model."
+    : "Bank detection model output. A reason to look, not a verdict.";
+
+  main.innerHTML = `
+    <div class="topbar">
+      <div class="crumbs">Case Queue <span style="opacity:.5">/</span> <b>${c.id}</b></div>
+      <div class="search-box">${ICONS.search}<span>Search cases, customers, cards…</span></div>
+    </div>
+
+    <div class="main-head">
+      <div>
+        <h2>${c.id}</h2>
+        <div class="sub">${ICONS.clock} Opened ${c.opened} &middot; Trigger: ${c.trigger.replace("_"," ")}</div>
+      </div>
+      <div class="status-chip"><span class="status-dot"></span>Awaiting investigation</div>
+    </div>
+
+    <p class="trigger-quote">${ICONS.info}${TRIGGER_TEXT[c.trigger](c)}</p>
+
+    <div class="grid2">
+      <div>
+        <div class="card">
+          <h3>${ICONS.txn} Flagged transaction</h3>
+          <div class="field-grid">
+            <div class="field"><label>Transaction ID</label><div class="val mono">${c.txn}</div></div>
+            <div class="field"><label>Amount</label><div class="val mono">$${c.amt.toFixed(2)}</div></div>
+            <div class="field"><label>Channel</label><div class="val" style="text-transform:capitalize">${c.channel.replace("_"," ")}</div></div>
+            <div class="field"><label>Billing region</label><div class="val mono">${c.region ? c.region : "—"}</div></div>
+            <div class="field"><label>Card</label><div class="val mono">${c.card}</div></div>
+            <div class="field"><label>Customer</label><div class="val mono">${c.cust}</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>${ICONS.shield} Risk score</h3>
+          <div class="risk-wrap">
+            ${riskRingSVG(c.score)}
+            <div class="risk-desc">
+              <div class="risk-band-label" style="color:${band.color}">${TRIGGER_ICON.risk_score.replace('currentColor', band.color)} ${c.score===null ? "No score" : band.key.charAt(0).toUpperCase()+band.key.slice(1)+" risk"}</div>
+              <p>${riskNote}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>${ICONS.clock} Recent activity on this card</h3>
+          <div class="txn-list">
+            ${recentTxns.map(t => `
+              <div class="txn-row ${t.flagged ? 'is-flagged' : ''}">
+                <div class="left"><span class="dot-small"></span><span class="mono">${t.id}</span>${t.flagged ? '<span class="flag-badge">FLAGGED</span>' : ''}</div>
+                <span class="amt">$${t.amt}</span>
+              </div>`).join("")}
+          </div>
+          <div class="dummy-note">${ICONS.info}Sample data for layout — not pulled from the graph yet.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h3>${ICONS.user} Customer &amp; card</h3>
+          <div class="field-grid">
+            <div class="field"><label>Customer ID</label><div class="val mono">${c.cust}</div></div>
+            <div class="field"><label>Card ID</label><div class="val mono">${c.card}</div></div>
+            <div class="field"><label>Network</label><div class="val">${network}</div></div>
+            <div class="field"><label>Card type</label><div class="val">${cardType}</div></div>
+            <div class="field"><label>Cards on file</label><div class="val">${cardsOnFile}</div></div>
+            <div class="field"><label>Customer since</label><div class="val mono">${memberSince}</div></div>
+          </div>
+          <div class="dummy-note">${ICONS.info}Sample data for layout — not pulled from the graph yet.</div>
+        </div>
+
+        <div class="card">
+          <h3>${ICONS.network} Connected evidence</h3>
+          ${evidence.map(e => `
+            <div class="evidence-item">
+              <div class="evidence-icon">${e.icon}</div>
+              <div class="evidence-body">
+                <div class="t">${e.t}</div>
+                <div class="d">${e.d}</div>
+              </div>
+            </div>`).join("")}
+          <div class="dummy-note">${ICONS.info}Placeholder evidence — real version will query TigerGraph.</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+let selected = CASES[0].id;
+function selectCase(id){
+  selected = id;
+  renderList(selected);
+  renderMain(CASES.find(c => c.id === id));
+}
+renderStats();
+selectCase(selected);
+</script>
+</body>
+</html>

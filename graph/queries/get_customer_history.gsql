@@ -1,0 +1,11 @@
+USE GRAPH HHGoaFraudGraph
+
+CREATE QUERY get_customer_history(STRING cid) FOR GRAPH HHGoaFraudGraph {
+  customers = SELECT c FROM Customer:c WHERE c.customer_id == cid;
+  cards = SELECT ca FROM customers:c -(OWNS>)- Card:ca;
+  txns = SELECT t FROM cards:ca -(MADE>)- Transaction:t
+         ORDER BY t.ts DESC LIMIT 100;
+  PRINT customers;
+  PRINT cards;
+  PRINT txns;
+}

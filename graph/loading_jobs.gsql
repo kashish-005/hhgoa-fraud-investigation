@@ -1,0 +1,86 @@
+// Run schema.gsql first.
+// Replace the file paths with TigerGraph-accessible paths in your workspace.
+
+USE GRAPH HHGoaFraudGraph
+
+CREATE LOADING JOB load_hhgoa_reference FOR GRAPH HHGoaFraudGraph {
+  DEFINE FILENAME f_customers;
+  DEFINE FILENAME f_cards;
+  DEFINE FILENAME f_devices;
+  DEFINE FILENAME f_emails;
+  DEFINE FILENAME f_regions;
+  DEFINE FILENAME f_closed;
+
+  LOAD f_customers TO VERTEX Customer VALUES(
+    $"customer_id", to_uint($"n_cards")
+  ) USING HEADER="true";
+
+  LOAD f_cards TO VERTEX Card VALUES(
+    $"card_id", $"customer_id", to_uint($"k_number"),
+    $"card2", $"card3", $"card4", $"card5", $"card6"
+  ) USING HEADER="true";
+
+  LOAD f_devices TO VERTEX DeviceProfile VALUES(
+    $"device_profile_id", $"DeviceInfo", $"id_30", $"id_31", $"id_33"
+  ) USING HEADER="true";
+
+  LOAD f_emails TO VERTEX EmailDomain VALUES($"domain")
+    USING HEADER="true";
+
+  LOAD f_regions TO VERTEX BillingRegion VALUES(
+    $"region_id", $"country_code"
+  ) USING HEADER="true";
+
+  LOAD f_closed TO VERTEX ClosedCase VALUES(
+    $"case_id", $"customer_id", $"card_id", $"opened_at", $"closed_at",
+    $"outcome", $"pattern", $"first_fraud_txn_id", to_uint($"n_txns"),
+    to_float($"exposure_usd"), $"report_filed", $"actions_taken", $"analyst_notes"
+  ) USING HEADER="true";
+}
+
+CREATE LOADING JOB load_hhgoa_transactions FOR GRAPH HHGoaFraudGraph {
+  DEFINE FILENAME f_tx;
+  LOAD f_tx TO VERTEX Transaction VALUES(
+    $"TransactionID", $"customer_id", $"card_id", $"ts",
+    to_uint($"TransactionDT"), to_float($"TransactionAmt"), $"ProductCD",
+    $"channel", to_float($"risk_score"), $"addr1", $"addr2",
+    to_float($"dist1"), to_float($"dist2"), $"P_emaildomain",
+    $"R_emaildomain", $"device_profile_id", to_bool($"has_device_record")
+  ) USING HEADER="true";
+}
+
+CREATE LOADING JOB load_hhgoa_edges FOR GRAPH HHGoaFraudGraph {
+  DEFINE FILENAME f_cards;
+  DEFINE FILENAME f_tx;
+  DEFINE FILENAME f_identity;
+  DEFINE FILENAME f_closed_tx;
+  DEFINE FILENAME f_closed_cards;
+
+  LOAD f_cards TO EDGE OWNS VALUES(
+    $"customer_id", $"card_id"
+  ) USING HEADER="true";
+
+  LOAD f_tx TO EDGE MADE VALUES(
+    $"card_id", $"TransactionID"
+  ) USING HEADER="true";
+
+  LOAD f_tx TO EDGE FROM_DEVICE VALUES(
+    $"TransactionID", $"device_profile_id"
+  ) USING HEADER="true", FILTER=$"device_profile_id" != "";
+
+  LOAD f_tx TO EDGE PURCHASER_EMAIL VALUES(
+    $"TransactionID", $"P_emaildomain"
+  ) USING HEADER="true", FILTER=$"P_emaildomain" != "";
+
+  LOAD f_tx TO EDGE BILLED_IN VALUES(
+    $"TransactionID", $"addr1"
+  ) USING HEADER="true", FILTER=$"addr1" != "";
+
+  LOAD f_closed_tx TO EDGE INVOLVES VALUES(
+    $"case_id", $"transaction_id"
+  ) USING HEADER="true";
+
+  LOAD f_closed_cards TO EDGE CONNECTED_TO VALUES(
+    $"case_id", $"card_id"
+  ) USING HEADER="true";
+}

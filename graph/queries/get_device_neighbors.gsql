@@ -1,0 +1,13 @@
+USE GRAPH HHGoaFraudGraph
+
+CREATE QUERY get_device_neighbors(STRING did) FOR GRAPH HHGoaFraudGraph {
+  device = SELECT d FROM DeviceProfile:d WHERE d.device_profile_id == did;
+  txns = SELECT t FROM device:d <-(FROM_DEVICE)- Transaction:t
+         ORDER BY t.ts DESC LIMIT 200;
+  cards = SELECT c FROM txns:t -(MADE>)- Card:c;
+  customers = SELECT cu FROM cards:c -(OWNS>)- Customer:cu;
+  PRINT device;
+  PRINT txns;
+  PRINT cards;
+  PRINT customers;
+}
