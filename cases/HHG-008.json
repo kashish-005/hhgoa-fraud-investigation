@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-008",
+  "pattern": "card_not_present_new_device",
+  "risk_level": "high",
+  "confidence": "high",
+  "evidence_summary": "Customer reported the $55.68 online transaction as unauthorized. A device record exists. Historical records contain extensive confirmed fraud, predominantly card_not_present_new_device.",
+  "reasoning": "The customer dispute and repeated historical card-not-present/new-device fraud pattern provide strong supporting evidence.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "block_account",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "The current customer report aligns with the dominant historical fraud pattern."
+}

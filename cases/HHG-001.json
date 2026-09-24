@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-001",
+  "pattern": "out_of_region_use",
+  "risk_level": "high",
+  "confidence": "high",
+  "evidence_summary": "Flagged in-person transaction for $77.07 with risk score 0.61. Historical cases for this card/customer context repeatedly include confirmed fraud involving out-of-region use and card-not-present activity.",
+  "reasoning": "The historical investigation record contains multiple confirmed-fraud cases with out_of_region_use for the related card/customer context, including repeated card blocking and reissue actions.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "block_account",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "Repeated confirmed-fraud history is strong evidence that the flagged activity warrants containment and analyst review."
+}

@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-013",
+  "pattern": "account_takeover",
+  "risk_level": "high",
+  "confidence": "high",
+  "evidence_summary": "Online $35.66 transaction with risk score 0.76 and a recorded Windows/Chrome device. Historical cases include account_takeover and card_not_present_new_device fraud.",
+  "reasoning": "The elevated risk score is supported by repeated historical confirmed-fraud patterns involving account takeover.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "block_account",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "The historical account-takeover pattern provides strong contextual support for containment."
+}

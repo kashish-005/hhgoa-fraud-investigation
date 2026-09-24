@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-019",
+  "pattern": "out_of_region_use",
+  "risk_level": "high",
+  "confidence": "high",
+  "evidence_summary": "Online $99.92 transaction with risk score 0.90, Verizon and Gmail email-domain mismatch, and a recorded Windows/Chrome device. Historical records contain confirmed out_of_region_use and card_not_present_fraud.",
+  "reasoning": "The high risk signal is accompanied by multiple contextual indicators and matching historical confirmed-fraud patterns.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "block_account",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "The combined current and historical evidence supports strong containment and analyst review."
+}

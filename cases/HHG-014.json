@@ -1,0 +1,20 @@
+{
+  "case_id": "HHG-014",
+  "pattern": "shared_device_activity",
+  "risk_level": "medium",
+  "confidence": "medium",
+  "evidence_summary": "Analyst-requested $74.96 online transaction with low risk score 0.05. The trigger specifically states that several cards show purchases from the same unusual device profile. A device record is present.",
+  "reasoning": "The analyst request identifies shared unusual-device activity as the investigation trigger, while the low model risk score argues against relying on the score alone.",
+  "recommended_actions": [
+    {
+      "action": "monitor_account",
+      "requires_approval": false
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "The shared-device relationship needs graph-level investigation before stronger containment."
+}

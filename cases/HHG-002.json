@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-002",
+  "pattern": "card_not_present_fraud",
+  "risk_level": "high",
+  "confidence": "high",
+  "evidence_summary": "Online card transaction for $292.36 with risk score 0.79 and no device record. Historical matching case CC-4160 was confirmed fraud with card_not_present_fraud and resulted in card blocking.",
+  "reasoning": "The current transaction is online and lacks a device record, while the historical record contains confirmed fraud of the same pattern for the related card context.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "block_account",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "The historical confirmed-fraud pattern closely matches the current transaction."
+}

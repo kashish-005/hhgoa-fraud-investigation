@@ -1,0 +1,28 @@
+{
+  "case_id": "HHG-011",
+  "pattern": "card_testing",
+  "risk_level": "high",
+  "confidence": "high",
+  "evidence_summary": "Customer reported the $131.30 online transaction as unauthorized. Historical records contain card_not_present_new_device and card_testing cases, including cases with report filing.",
+  "reasoning": "The customer dispute aligns with repeated historical card-not-present and card-testing activity for the related context.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "block_account",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    },
+    {
+      "action": "file_report",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": true,
+  "explanation": "Repeated historical fraud and card-testing activity justify heightened investigation and reporting review."
+}

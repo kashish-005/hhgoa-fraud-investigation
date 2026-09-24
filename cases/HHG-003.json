@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-003",
+  "pattern": "out_of_region_use",
+  "risk_level": "high",
+  "confidence": "high",
+  "evidence_summary": "Customer reported the $49.00 transaction as unauthorized. Historical records for the related context contain multiple confirmed-fraud out_of_region_use cases, alongside one cleared case.",
+  "reasoning": "The customer report is direct evidence of disputed activity, and the historical record contains repeated confirmed fraud with an out_of_region_use pattern.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "block_account",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "The customer dispute combined with repeated historical confirmed-fraud cases supports containment."
+}

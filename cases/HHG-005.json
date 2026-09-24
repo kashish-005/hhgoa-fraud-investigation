@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-005",
+  "pattern": "account_takeover",
+  "risk_level": "medium",
+  "confidence": "high",
+  "evidence_summary": "Online $100.07 transaction with risk score 0.54, iOS device profile, and mismatch between purchaser and recipient email domains. Historical related cases are repeatedly confirmed account takeover.",
+  "reasoning": "The device and email context provide additional signals, while three historical cases for the related context were confirmed fraud with account_takeover.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "monitor_account",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "Historical account-takeover evidence is significant, although the current risk score is moderate."
+}

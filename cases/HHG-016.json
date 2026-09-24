@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-016",
+  "pattern": "insufficient_evidence",
+  "risk_level": "low",
+  "confidence": "low",
+  "evidence_summary": "Customer reported the $59.67 online transaction as unauthorized. Risk score is 0.37 and a device record exists. No matching closed-case history was found.",
+  "reasoning": "The customer report warrants investigation, but the available historical evidence does not establish a recurring pattern.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    },
+    {
+      "action": "monitor_account",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "Additional account and transaction history would help determine whether broader action is justified."
+}

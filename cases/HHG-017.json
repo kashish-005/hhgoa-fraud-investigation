@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-017",
+  "pattern": "insufficient_evidence",
+  "risk_level": "medium",
+  "confidence": "low",
+  "evidence_summary": "Online $100.09 transaction with risk score 0.57, anonymous.com email domains, and a Windows/Chrome device. The matching historical case was cleared.",
+  "reasoning": "The current transaction has a moderate risk signal, but the available historical reference was cleared.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    },
+    {
+      "action": "monitor_account",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "The model signal should be treated as evidence for investigation rather than a definitive fraud finding."
+}

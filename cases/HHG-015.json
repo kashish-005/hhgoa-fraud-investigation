@@ -1,0 +1,24 @@
+{
+  "case_id": "HHG-015",
+  "pattern": "card_not_present_new_device",
+  "risk_level": "high",
+  "confidence": "high",
+  "evidence_summary": "Online $599.94 transaction with risk score 0.77, anonymous.com email domains, and a recorded Windows/IE device. Historical context contains confirmed card_not_present_new_device fraud.",
+  "reasoning": "The elevated risk signal and historical card-not-present/new-device fraud pattern support escalation and containment.",
+  "recommended_actions": [
+    {
+      "action": "block_transaction",
+      "requires_approval": true
+    },
+    {
+      "action": "block_account",
+      "requires_approval": true
+    },
+    {
+      "action": "escalate_to_analyst",
+      "requires_approval": true
+    }
+  ],
+  "sar_required": false,
+  "explanation": "The current transaction has meaningful risk indicators and matching historical fraud evidence."
+}
