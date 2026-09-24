@@ -2,12 +2,15 @@
 name = "hhgoa-fraud-investigation"
 version = "0.1.0"
 requires-python = ">=3.12"
+
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "pandas",
     "python-dotenv",
     "pyTigerGraph",
+    "requests",
+    "google-genai",
 ]
 
 [tool.vercel]

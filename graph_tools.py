@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TG_BASE_URL = os.getenv("TG_URL")
+TG_BASE_URL = os.getenv("TG_URL") or os.getenv("TG_HOST")
 HEADERS = {"Authorization": f"Bearer {os.getenv('TG_TOKEN')}"}
 
 def get_transaction_history(customer_id: str):
