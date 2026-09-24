@@ -3,8 +3,8 @@
   "pattern": "account_takeover",
   "risk_level": "high",
   "confidence": "high",
-  "evidence_summary": "Online $125.08 transaction with risk score 0.52, Yahoo/Cox email-domain mismatch, and a recorded Windows/IE device. Historical records contain confirmed account_takeover cases.",
-  "reasoning": "The current transaction contains contextual inconsistencies and the related historical cases establish a recurring account-takeover pattern.",
+  "evidence_summary": "Online $125.08 transaction with risk score 0.52, Yahoo/Cox email-domain mismatch, and Windows/IE device. Historical records contain confirmed account_takeover cases.",
+  "reasoning": "Current contextual inconsistencies combined with historical account-takeover cases support the pattern.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -20,5 +20,5 @@
     }
   ],
   "sar_required": false,
-  "explanation": "Historical account-takeover evidence combined with the current transaction context supports containment."
+  "explanation": "Historical account-takeover evidence combined with current transaction context supports containment."
 }

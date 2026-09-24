@@ -3,8 +3,8 @@
   "pattern": "card_testing",
   "risk_level": "high",
   "confidence": "high",
-  "evidence_summary": "Customer reported the $131.30 online transaction as unauthorized. Historical records contain card_not_present_new_device and card_testing cases, including cases with report filing.",
-  "reasoning": "The customer dispute aligns with repeated historical card-not-present and card-testing activity for the related context.",
+  "evidence_summary": "Customer reported the $131.30 online transaction as unauthorized. Historical records contain card_not_present_new_device and card_testing cases, including report filings.",
+  "reasoning": "The customer dispute aligns with repeated historical card-not-present and card-testing activity.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -24,5 +24,5 @@
     }
   ],
   "sar_required": true,
-  "explanation": "Repeated historical fraud and card-testing activity justify heightened investigation and reporting review."
+  "explanation": "Repeated historical fraud and card-testing activity justify heightened investigation."
 }

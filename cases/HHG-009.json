@@ -4,7 +4,7 @@
   "risk_level": "low",
   "confidence": "low",
   "evidence_summary": "Customer reported the $30.02 online transaction as unauthorized. Risk score is 0.28 and no device record is present. No matching closed-case history was found.",
-  "reasoning": "The customer report warrants investigation, but the available historical evidence does not establish a recurring fraud pattern.",
+  "reasoning": "The customer report warrants investigation, but historical evidence does not establish a recurring pattern.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -20,5 +20,5 @@
     }
   ],
   "sar_required": false,
-  "explanation": "Further account and transaction history would help establish whether this is isolated or part of a broader pattern."
+  "explanation": "Further account and transaction history would help establish whether this is isolated."
 }

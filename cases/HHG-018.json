@@ -3,8 +3,8 @@
   "pattern": "account_takeover",
   "risk_level": "high",
   "confidence": "high",
-  "evidence_summary": "Customer reported the $39.08 in-person transaction as unauthorized. Historical records contain many confirmed account_takeover and out_of_region_use cases, including multiple report filings.",
-  "reasoning": "The customer dispute is supported by extensive historical confirmed-fraud activity in the related context.",
+  "evidence_summary": "Customer reported the $39.08 in-person transaction as unauthorized. Historical records contain many confirmed account_takeover and out_of_region_use cases, including report filings.",
+  "reasoning": "Customer dispute is supported by extensive historical confirmed-fraud activity.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -24,5 +24,5 @@
     }
   ],
   "sar_required": true,
-  "explanation": "The repeated confirmed-fraud history and customer report support heightened containment and reporting review."
+  "explanation": "Repeated confirmed-fraud history supports heightened containment and reporting review."
 }

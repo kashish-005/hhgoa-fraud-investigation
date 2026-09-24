@@ -4,7 +4,7 @@
   "risk_level": "medium",
   "confidence": "medium",
   "evidence_summary": "In-person $30.91 transaction with risk score 0.55. Historical context contains both a cleared case and a confirmed card_not_present_fraud case.",
-  "reasoning": "The evidence is mixed: one historical case was cleared while another was confirmed fraud. The current transaction alone does not establish a definitive pattern.",
+  "reasoning": "Historical outcomes are mixed, so the current transaction does not establish a definitive pattern.",
   "recommended_actions": [
     {
       "action": "block_transaction",

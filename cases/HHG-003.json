@@ -3,8 +3,8 @@
   "pattern": "out_of_region_use",
   "risk_level": "high",
   "confidence": "high",
-  "evidence_summary": "Customer reported the $49.00 transaction as unauthorized. Historical records for the related context contain multiple confirmed-fraud out_of_region_use cases, alongside one cleared case.",
-  "reasoning": "The customer report is direct evidence of disputed activity, and the historical record contains repeated confirmed fraud with an out_of_region_use pattern.",
+  "evidence_summary": "Customer reported the $49 transaction as unauthorized. Historical records contain multiple confirmed out_of_region_use cases.",
+  "reasoning": "The customer dispute is supported by repeated historical confirmed-fraud activity.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -20,5 +20,5 @@
     }
   ],
   "sar_required": false,
-  "explanation": "The customer dispute combined with repeated historical confirmed-fraud cases supports containment."
+  "explanation": "Customer dispute plus historical confirmed fraud supports containment."
 }

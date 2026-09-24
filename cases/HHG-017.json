@@ -3,8 +3,8 @@
   "pattern": "insufficient_evidence",
   "risk_level": "medium",
   "confidence": "low",
-  "evidence_summary": "Online $100.09 transaction with risk score 0.57, anonymous.com email domains, and a Windows/Chrome device. The matching historical case was cleared.",
-  "reasoning": "The current transaction has a moderate risk signal, but the available historical reference was cleared.",
+  "evidence_summary": "Online $100.09 transaction with risk score 0.57, anonymous.com domains, and Windows/Chrome device. The matching historical case was cleared.",
+  "reasoning": "The transaction has a moderate risk signal, but the available historical reference was cleared.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -20,5 +20,5 @@
     }
   ],
   "sar_required": false,
-  "explanation": "The model signal should be treated as evidence for investigation rather than a definitive fraud finding."
+  "explanation": "The model signal should be treated as evidence for investigation rather than a definitive finding."
 }

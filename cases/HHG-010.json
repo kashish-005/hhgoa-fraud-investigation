@@ -3,8 +3,8 @@
   "pattern": "insufficient_evidence",
   "risk_level": "medium",
   "confidence": "low",
-  "evidence_summary": "Online $1,000.03 transaction with risk score 0.90, anonymous.com email domains, and a recorded Windows/Edge device. The matching historical case was cleared.",
-  "reasoning": "The high risk score and transaction amount warrant review, but the available historical reference case was cleared and does not support a confirmed recurring fraud pattern.",
+  "evidence_summary": "Online $1,000.03 transaction with risk score 0.90, anonymous.com domains, and a Windows/Edge device. The matching historical case was cleared.",
+  "reasoning": "The high risk score warrants review, but the available historical reference case was cleared.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -20,5 +20,5 @@
     }
   ],
   "sar_required": false,
-  "explanation": "The high model signal should be investigated without treating it as a fraud verdict."
+  "explanation": "The model signal should be treated as evidence rather than a fraud verdict."
 }

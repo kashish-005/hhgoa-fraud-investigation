@@ -3,8 +3,8 @@
   "pattern": "out_of_region_use",
   "risk_level": "high",
   "confidence": "high",
-  "evidence_summary": "In-person $111.92 transaction with risk score 0.87 and distance value 79. Historical records contain extensive confirmed fraud involving out_of_region_use and account takeover, including cases with report filing.",
-  "reasoning": "The high risk signal is supported by the geographic-distance evidence and extensive historical confirmed-fraud activity.",
+  "evidence_summary": "In-person $111.92 transaction with risk score 0.87 and distance value 79. Historical records contain extensive confirmed fraud involving out_of_region_use and account takeover.",
+  "reasoning": "High risk is supported by geographic-distance evidence and extensive historical confirmed-fraud activity.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -24,5 +24,5 @@
     }
   ],
   "sar_required": true,
-  "explanation": "The combination of high risk, geographic anomaly, and repeated confirmed-fraud history warrants escalation and review for reporting."
+  "explanation": "High risk, geographic anomaly, and repeated confirmed-fraud history warrant reporting review."
 }

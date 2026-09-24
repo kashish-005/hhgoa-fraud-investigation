@@ -3,8 +3,8 @@
   "pattern": "card_not_present_new_device",
   "risk_level": "high",
   "confidence": "high",
-  "evidence_summary": "Customer reported the $55.68 online transaction as unauthorized. A device record exists. Historical records contain extensive confirmed fraud, predominantly card_not_present_new_device.",
-  "reasoning": "The customer dispute and repeated historical card-not-present/new-device fraud pattern provide strong supporting evidence.",
+  "evidence_summary": "Customer reported the $55.68 online transaction as unauthorized. A device record exists. Historical records contain extensive confirmed card_not_present_new_device fraud.",
+  "reasoning": "The customer dispute aligns with the dominant historical fraud pattern.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -20,5 +20,5 @@
     }
   ],
   "sar_required": false,
-  "explanation": "The current customer report aligns with the dominant historical fraud pattern."
+  "explanation": "Current customer report aligns with repeated historical fraud."
 }

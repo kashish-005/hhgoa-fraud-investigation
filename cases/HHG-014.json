@@ -3,8 +3,8 @@
   "pattern": "shared_device_activity",
   "risk_level": "medium",
   "confidence": "medium",
-  "evidence_summary": "Analyst-requested $74.96 online transaction with low risk score 0.05. The trigger specifically states that several cards show purchases from the same unusual device profile. A device record is present.",
-  "reasoning": "The analyst request identifies shared unusual-device activity as the investigation trigger, while the low model risk score argues against relying on the score alone.",
+  "evidence_summary": "Analyst-requested $74.96 online transaction with risk score 0.05. The trigger states several cards show purchases from the same unusual device profile.",
+  "reasoning": "The analyst request identifies shared unusual-device activity as the trigger, while the low risk score should not be treated as decisive.",
   "recommended_actions": [
     {
       "action": "monitor_account",

@@ -3,8 +3,8 @@
   "pattern": "out_of_region_use",
   "risk_level": "high",
   "confidence": "high",
-  "evidence_summary": "Flagged in-person transaction for $77.07 with risk score 0.61. Historical cases for this card/customer context repeatedly include confirmed fraud involving out-of-region use and card-not-present activity.",
-  "reasoning": "The historical investigation record contains multiple confirmed-fraud cases with out_of_region_use for the related card/customer context, including repeated card blocking and reissue actions.",
+  "evidence_summary": "Flagged in-person transaction for $77.07 with risk score 0.61. Historical cases repeatedly include confirmed fraud involving out-of-region use.",
+  "reasoning": "Multiple related historical cases were confirmed fraud with out_of_region_use and resulted in card blocking/reissue.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -20,5 +20,5 @@
     }
   ],
   "sar_required": false,
-  "explanation": "Repeated confirmed-fraud history is strong evidence that the flagged activity warrants containment and analyst review."
+  "explanation": "Repeated confirmed-fraud history supports containment and analyst review."
 }

@@ -3,8 +3,8 @@
   "pattern": "account_takeover",
   "risk_level": "medium",
   "confidence": "high",
-  "evidence_summary": "Online $100.07 transaction with risk score 0.54, iOS device profile, and mismatch between purchaser and recipient email domains. Historical related cases are repeatedly confirmed account takeover.",
-  "reasoning": "The device and email context provide additional signals, while three historical cases for the related context were confirmed fraud with account_takeover.",
+  "evidence_summary": "Online $100.07 transaction with risk score 0.54, iOS device, and differing purchaser/recipient email domains. Historical related cases were confirmed account takeover.",
+  "reasoning": "Device and email context provide additional signals and historical cases repeatedly show account_takeover.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -20,5 +20,5 @@
     }
   ],
   "sar_required": false,
-  "explanation": "Historical account-takeover evidence is significant, although the current risk score is moderate."
+  "explanation": "Historical account-takeover evidence is significant despite a moderate current risk score."
 }

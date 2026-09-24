@@ -3,8 +3,8 @@
   "pattern": "card_not_present_fraud",
   "risk_level": "high",
   "confidence": "high",
-  "evidence_summary": "Customer reported the $128.33 online transaction as unauthorized. Historical records include multiple confirmed-fraud card_not_present_fraud cases for the related context.",
-  "reasoning": "The transaction is online, the customer explicitly disputes it, and historical cases repeatedly show the same fraud pattern.",
+  "evidence_summary": "Customer reported the $128.33 online transaction as unauthorized. Historical records include multiple confirmed card_not_present_fraud cases.",
+  "reasoning": "The transaction is online, disputed by the customer, and matches a repeated historical fraud pattern.",
   "recommended_actions": [
     {
       "action": "block_transaction",
@@ -20,5 +20,5 @@
     }
   ],
   "sar_required": false,
-  "explanation": "The customer report and historical pattern provide strong evidence for escalation and containment."
+  "explanation": "Customer report and historical pattern support escalation and containment."
 }
