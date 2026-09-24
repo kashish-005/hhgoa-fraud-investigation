@@ -420,12 +420,11 @@ Create a `.env` file containing the required credentials/configuration for the g
 Example:
 
 ```env
-TG_HOST=<your-tigergraph-endpoint>
-TG_TOKEN=<your-tigergraph-token>
-GEMINI_API_KEY=<your-gemini-api-key>
+TG_HOST=<tigergraph-endpoint>
+TG_TOKEN=<tigergraph-token>
+GEMINI_API_KEY=<gemini-api-key>
 ```
 
-Do not commit secrets to GitHub.
 
 ## 5. Start FastAPI
 
